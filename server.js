@@ -12,10 +12,8 @@ app.use(cors());
 app.use(express.static(__dirname));
 
 app.get('/api/movies', async (req, res) => {
-    console.log(req);
 
     const apiKey = process.env.MOVIE_DB_API_KEY;
-    console.log(apiKey);
     const apiUrl = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1';
     const options = {
         method: 'GET',
