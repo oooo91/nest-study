@@ -1,0 +1,92 @@
+body, html {
+  height: 100%;
+}
+
+body {
+  background-color: rgb(240, 237, 220);
+  font-family: 'Gowun Dodum', sans-serif;
+}
+
+button,
+input {
+  border: none;
+  outline: none;
+}
+
+.container {
+  background-color: rgb(240, 237, 220);
+}
+
+.search-title,
+.search-box {
+  background-color: rgb(255, 208, 208);
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 15px;
+}
+
+.search-box {
+  padding: 10px 0px;
+}
+
+.search-box_btn {
+  background-color: rgb(240, 237, 220);
+  font-family: 'Gowun Dodum', sans-serif;
+  padding: 5px;
+  margin-left: 10px;
+}
+
+input[name='search-box_input'] {
+  padding: 6px;
+  width: 200px;
+}
+
+.show-movies {
+  height: 100vh;
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.show-movie {
+  background-color: rgb(255, 254, 249);
+  box-sizing: border-box; /* 크기에 padding과 border를 포함시키기 위해 */
+  height: 100vh;
+  width: 22%;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 2%;
+}
+
+.movie-image {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #b7b6b6;
+}
+
+.movie-image img {
+  height: 50vh;
+  width: auto;
+}
+
+.movie-info_title {
+  font-weight: bold;
+  font-size: 25px;
+  padding: 10px;
+}
+
+.movie-info_content {
+  max-height: 15em;
+  padding: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movie-info_rating {
+  padding: 10px;
+}
+
