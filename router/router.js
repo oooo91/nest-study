@@ -113,7 +113,7 @@ router.delete("/products/:id", async (req, res, next) => {
       return res.status(404).json({ message: "비밀번호가 틀렸습니다." });
     }
 
-    await product.remove();
+    await product.deleteOne({_id : productId});
     res.json({ message: "상품을 삭제하였습니다." });
   } catch (error) {
     next(error);
