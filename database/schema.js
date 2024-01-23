@@ -1,19 +1,15 @@
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
-  order: {
-    type: Number,
-    requird: true,
-  },
-  productName: {
+  title: {
     type: String,
     required: true,
   },
-  description: {
+  content: {
     type: String,
     required: true,
   },
-  userName: {
+  author: {
     type: String,
     required: true,
   },
@@ -25,11 +21,8 @@ const productSchema = new mongoose.Schema({
     type: String,
     enum: ["FOR_SALE", "SOLD_OUT"],
     default: "FOR_SALE",
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  }
+},
+{ timestamps : true});
 
 export default mongoose.model("Product", productSchema);

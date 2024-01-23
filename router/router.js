@@ -5,15 +5,15 @@ import Joi from "joi";
 const router = express.Router();
 
 const addSchema = Joi.object({
-  productName: Joi.string().required(),
-  description: Joi.string().required(),
-  userName: Joi.string().required(),
+  title: Joi.string().required(),
+  content: Joi.string().required(),
+  author: Joi.string().required(),
   password: Joi.string().required(),
 });
 
 const updateSchema = Joi.object({
-  productName: Joi.string().required(),
-  description: Joi.string().required(),
+  title: Joi.string().required(),
+  content: Joi.string().required(),
   password: Joi.string().required(),
   status: Joi.string().valid("FOR_SALE", "SOLD_OUT"),
 });
@@ -21,7 +21,7 @@ const updateSchema = Joi.object({
 //상품 조회
 router.get("/products", async (req, res, next) => {
   try {
-    const products = await Product.find().sort("-order").exec();
+    const products = await Product.find().sort("-createdAt");
     res.json(products);
   } catch (error) {
     next(error);
@@ -32,14 +32,12 @@ router.get("/products", async (req, res, next) => {
 router.post("/products", async (req, res, next) => {
   try {
     const validation = await addSchema.validateAsync(req.body);
-    const { productName, description, userName, password } = validation;
+    const { title, content, author, password } = validation;
 
-    const product = await Product.findOne().sort("-order").exec();
     const newProduct = await Product.create({
-      order: product ? product.order + 1 : 1,
-      productName: productName,
-      description: description,
-      userName: userName,
+      title: title,
+      content: content,
+      author: author,
       password: password,
     });
 
@@ -72,7 +70,7 @@ router.put("/products/:id", async (req, res, next) => {
     const validation = await updateSchema.validateAsync(req.body);
 
     const productId = req.params.id;
-    const { productName, description, password, status } = validation;
+    const { title, content, password, status } = validation;
 
     const product = await Product.findById(productId);
 
@@ -84,11 +82,9 @@ router.put("/products/:id", async (req, res, next) => {
       return res.status(404).json({ message: "비밀번호가 틀렸습니다." });
     }
 
-    product.productName = productName;
-    product.description = description;
-    product.password = password;
+    product.title = title;
+    product.content = content;
     product.status = status;
-    product.date = new Date();
 
     await product.save();
     res.json(product);
