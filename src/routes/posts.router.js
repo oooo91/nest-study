@@ -21,8 +21,9 @@ router.post("/posts", authMiddleware, async (req, res, next) => {
 });
 
 /** 이력서 목록 조회 API */
-router.get("/posts", async (req, res, next) => {
+router.get("/posts", authMiddleware, async (req, res, next) => {
   let { orderKey, orderValue } = req.query;
+  const userId = req.user.userId;
 
   if (!orderKey) {
     orderKey = "postId";
@@ -45,8 +46,11 @@ router.get("/posts", async (req, res, next) => {
         }
       }
     },
+    where : {
+      userId : userId
+    },
     orderBy: {
-      [orderKey]: orderValue.toLocaleLowerCase(),
+      [orderKey]: orderValue.toLocaleLowerCase()
     }
   });
 
@@ -54,13 +58,13 @@ router.get("/posts", async (req, res, next) => {
 });
 
 /** 이력서 상세 조회 */
-router.get("/posts/:postId", async (req, res, next) => {
+router.get("/posts/:postId", authMiddleware, async (req, res, next) => {
   const postId = req.params.postId;
 
   const post = await prisma.posts.findFirst({
     where: {
-      postId: +postId,
-    },
+      postId: +postId
+    }
   });
 
   if (!post)
@@ -77,8 +81,8 @@ router.patch("/posts/:postId", authMiddleware, async (req, res, next) => {
 
   const post = await prisma.posts.findFirst({
     where: {
-      postId: +postId,
-    },
+      postId: +postId
+    }
   });
 
   if (!post) {
