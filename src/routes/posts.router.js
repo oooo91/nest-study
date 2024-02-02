@@ -13,7 +13,7 @@ router.post("/posts", authMiddleware, async (req, res, next) => {
     data: {
       userId: +userId,
       title,
-      content
+      content,
     },
   });
 
@@ -34,24 +34,24 @@ router.get("/posts", authMiddleware, async (req, res, next) => {
   }
 
   const post = await prisma.posts.findMany({
-    select : {
-      postId : true,
-      title : true,
-      content : true,
-      status : true,
-      updatedAt : true,
-      user : {
-        select : {
-          username : true
-        }
-      }
+    select: {
+      postId: true,
+      title: true,
+      content: true,
+      status: true,
+      updatedAt: true,
+      user: {
+        select: {
+          username: true,
+        },
+      },
     },
-    where : {
-      userId : userId
+    where: {
+      userId: userId,
     },
     orderBy: {
-      [orderKey]: orderValue.toLocaleLowerCase()
-    }
+      [orderKey]: orderValue.toLocaleLowerCase(),
+    },
   });
 
   return res.status(200).json({ data: post });
@@ -63,8 +63,8 @@ router.get("/posts/:postId", authMiddleware, async (req, res, next) => {
 
   const post = await prisma.posts.findFirst({
     where: {
-      postId: +postId
-    }
+      postId: +postId,
+    },
   });
 
   if (!post)
@@ -81,8 +81,8 @@ router.patch("/posts/:postId", authMiddleware, async (req, res, next) => {
 
   const post = await prisma.posts.findFirst({
     where: {
-      postId: +postId
-    }
+      postId: +postId,
+    },
   });
 
   if (!post) {

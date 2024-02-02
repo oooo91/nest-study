@@ -6,7 +6,6 @@ dotenv.config();
 const ACCESS_TOKEN_SECRET_KEY = process.env.KEY;
 
 export default async function (req, res, next) {
-  
   try {
     const { authorization } = req.cookies;
 
