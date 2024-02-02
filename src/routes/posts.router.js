@@ -13,8 +13,8 @@ router.post("/posts", authMiddleware, async (req, res, next) => {
     data: {
       userId: +userId,
       title,
-      content,
-    },
+      content
+    }
   });
 
   return res.status(201).json({ data: post });
@@ -43,15 +43,15 @@ router.get("/posts", authMiddleware, async (req, res, next) => {
       user: {
         select: {
           username: true,
-        },
+        }
       },
     },
     where: {
-      userId: userId,
+      userId: userId
     },
     orderBy: {
       [orderKey]: orderValue.toLocaleLowerCase(),
-    },
+    }
   });
 
   return res.status(200).json({ data: post });
@@ -64,7 +64,7 @@ router.get("/posts/:postId", authMiddleware, async (req, res, next) => {
   const post = await prisma.posts.findFirst({
     where: {
       postId: +postId,
-    },
+    }
   });
 
   if (!post)
@@ -82,7 +82,7 @@ router.patch("/posts/:postId", authMiddleware, async (req, res, next) => {
   const post = await prisma.posts.findFirst({
     where: {
       postId: +postId,
-    },
+    }
   });
 
   if (!post) {
