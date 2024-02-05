@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import authMiddleware from "../middleware/auth.middleware.js";
+import passport from "../config/kakaoStrategy.js";
 
 const router = express.Router();
 dotenv.config();
@@ -84,20 +85,40 @@ router.post("/sign-in", async (req, res, next) => {
   return res.status(200).json({ message: "로그인 되었습니다." });
 });
 
+/** 카카오 로그인 */
+router.get("/kakao", passport.authenticate("kakao"));
+
+router.get(
+  "/kakao/callback",
+  passport.authenticate("kakao", {
+    failureRedirect: "/api/sign-up",
+  }),
+  (req, res) => {
+    const user = req.user; // newUser 정보
+
+    const token = jwt.sign({ userId: user.userId }, ACCESS_TOKEN_SECRET_KEY, {
+      expiresIn: "12h",
+    });
+
+    res.cookie("authorization", `Bearer ${token}`);
+    return res.status(200).json({ message: "로그인 되었습니다." });
+  },
+);
+
 /** 사용자 조회 */
 router.get("/user", authMiddleware, async (req, res, next) => {
   const userId = req.user.userId;
 
   const user = await prisma.users.findFirst({
-    where : {
-      userId
+    where: {
+      userId,
     },
-    select : {
-      username : true,
-      email : true
-    }
+    select: {
+      username: true,
+      email: true,
+    },
   });
-  return res.status(200).json({data : user});
-})
+  return res.status(200).json({ data: user });
+});
 
 export default router;
