@@ -1,10 +1,9 @@
-export class PostsRepository {
-  constructor(prisma) {
-    this.prisma = prisma;
-  }
+import dataSource from '../typeorm/entity/post.entity.js';
 
+export class PostsRepository {
+  
   findAllPosts = async () => {
-    return this.prisma.posts.findMany({
+    return await dataSource.getRepository('Posts').find({
       select: {
         postId: true,
         title: true,
@@ -24,7 +23,7 @@ export class PostsRepository {
   };
 
   findPostById = async (postId) => {
-    return this.prisma.posts.findFirst({
+    return await dataSource.getRepository('Posts').findOne({
       where: {
         postId: +postId
       },
@@ -45,7 +44,7 @@ export class PostsRepository {
   };
 
   createPost = async (userId, title, content) => {
-    return this.prisma.posts.create({
+    return await dataSource.getRepository('Posts').insert({
       data: {
         userId: +userId,
         title,
@@ -67,7 +66,7 @@ export class PostsRepository {
   };
 
   updatePost = async (postId, title, content, status) => {
-    return this.prisma.posts.update({
+    return await dataSource.getRepository('Posts').update({
       where: {
         postId: +postId,
       },
@@ -92,7 +91,7 @@ export class PostsRepository {
   };
 
   deletePost = async (postId) => {
-    return this.prisma.posts.delete({
+    return await dataSource.getRepository('Posts').delete({
       where: {
         postId: +postId,
       },

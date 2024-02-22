@@ -1,14 +1,16 @@
+import dataSource from '../typeorm/entity/user.entity.js';
+
 export class UsersRepository {
   constructor(prisma) {
     this.prisma = prisma;
   }
 
   findByEmail =  async (email) => {
-    return await this.prisma.users.findFirst({ where: { email } });
+    return await dataSource.getRepository('Users').findOne({ where: { email } });
   };
 
   createUser =  async ({ email, nickname, password }) => {
-    return await this.prisma.users.create({
+    return await dataSource.getRepository('Users').insert({
       data: {
         email,
         nickname,
@@ -18,7 +20,7 @@ export class UsersRepository {
   };
 
   findById = async (userId) => {
-    return await this.prisma.users.findFirst({
+    return await dataSource.getRepository('Users').findOne({
       where: {
         userId,
       },
