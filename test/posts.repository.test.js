@@ -53,8 +53,8 @@ describe('PostsRepository', () => {
   test('createPost', async () => {
 
     const userId = 1;
-    const title = 'New Post';
-    const content = 'New Content';
+    const title = 'post';
+    const content = 'content';
     const mockCreatedPost = { postId: 3, userId, title, content, status: 'apply', updatedAt: new Date(), user: { nickname: 'User 1' } };
 
     prismaMock.posts.create.mockResolvedValue(mockCreatedPost);
@@ -72,8 +72,8 @@ describe('PostsRepository', () => {
   test('updatePost', async () => {
 
     const postId = 1;
-    const title = 'Updated Title';
-    const content = 'Updated Content';
+    const title = 'title';
+    const content = 'content';
     const status = 'apply';
     const mockUpdatedPost = { postId, title, content, status, updatedAt: new Date(), user: { nickname: 'User 1' } };
 

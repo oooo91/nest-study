@@ -40,15 +40,15 @@ describe('PostsController', () => {
     const samplePosts = [
       {
         postId: 4,
-        title: 'Title_2',
-        content : 'Content_2',
+        title: 'title',
+        content : 'content',
         createdAt: new Date('2024-02-21'),
         updatedAt: new Date('2024-02-21'),
       },
       {
         postId: 3,
-        title: 'Title_1',
-        content : 'Content_1',
+        title: 'title',
+        content : 'content',
         createdAt: new Date('2024-02-21'),
         updatedAt: new Date('2024-02-21'),
       },
@@ -69,9 +69,9 @@ describe('PostsController', () => {
   test('createPost', async () => {
 
     const createPostRequestBodyParams = {
-      title: 'Title_Success',
-      content: 'Content_Success',
-      userId: 'UserId_Success'
+      title: 'title',
+      content: 'content',
+      userId: 'userId'
     };
 
     mockRequest.body = createPostRequestBodyParams;
@@ -100,8 +100,8 @@ describe('PostsController', () => {
     const postId = 1;
     const samplePost = {
       postId: postId,
-      title: 'Sample Title',
-      content: 'Sample Content',
+      title: 'title',
+      content: 'content',
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -120,8 +120,8 @@ describe('PostsController', () => {
   test('updatePost', async () => {
     const postId = 1;
     const updatePostRequestBody = {
-      title: 'Updated Title',
-      content: 'Updated Content',
+      title: 'title',
+      content: 'content',
       password: 'password123',
     };
     const updatedPost = {

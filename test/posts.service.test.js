@@ -21,16 +21,16 @@ describe('PostsService', () => {
     const samplePosts = [
       {
         postId: 1,
-        title: 'Title_1',
-        content: 'Content_1',
-        status: 'active',
+        title: 'title1',
+        content: 'content1',
+        status: 'apply',
         updatedAt: new Date('2024-02-21'),
       },
       {
         postId: 2,
-        title: 'Title_2',
-        content: 'Content_2',
-        status: 'inactive',
+        title: 'title2',
+        content: 'content2',
+        status: 'apply',
         updatedAt: new Date('2024-02-21'),
       },
     ];
@@ -45,14 +45,14 @@ describe('PostsService', () => {
 
   test('createPost', async () => {
     const userId = 'user123';
-    const title = 'New Post';
-    const content = 'This is a new post';
+    const title = 'title';
+    const content = 'content';
 
     const createdPost = {
       postId: 123,
       title,
       content,
-      status: 'active',
+      status: 'apply',
       updatedAt: new Date(),
     };
 
@@ -69,9 +69,9 @@ describe('PostsService', () => {
     const postId = 1;
     const samplePost = {
       postId: postId,
-      title: 'Sample Title',
-      content: 'Sample Content',
-      status: 'active',
+      title: 'title',
+      content: 'content',
+      status: 'apply',
       updatedAt: new Date(),
     };
     mockPostsRepository.findPostById.mockResolvedValue(samplePost);
