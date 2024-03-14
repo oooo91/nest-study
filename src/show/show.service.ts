@@ -94,17 +94,15 @@ export class ShowService {
             .orderBy('ticket.created_at', 'DESC')
             .getOne();
 
-        if (!existingTicket) {
-          throw new NotFoundException('티켓 정보가 없습니다.');
-        }
-        if (existingTicket.cancelYn === false) {
+
+        if (existingTicket && existingTicket.cancelYn === false) {
             throw new NotFoundException('이미 예매된 좌석입니다.');
         }
-        if (existingTicket.userId === user.id) {
+        if (existingTicket && existingTicket.userId === user.id) {
             throw new ForbiddenException('이미 예매되었습니다.');
         }
 
-        const showDate = existingTicket ? existingTicket.seats?.show?.showDate : null;
+        const showDate = existingTicket ? existingTicket.seats.show.showDate : null;
 
         const currentTime = new Date();
         const isBeforeThreeHours = showDate && currentTime.getTime() < showDate.getTime() - 3 * 60 * 60 * 1000;
