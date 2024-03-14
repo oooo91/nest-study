@@ -12,9 +12,6 @@ export class Seat {
   @JoinColumn({ name: 'showId' })
   show: Show;
 
-  @Column({ type: 'int', nullable: false })
-  showId: number;
-
   @OneToMany(() => Ticket, (ticket) => ticket.seats)
   ticket: Ticket[];
   

@@ -21,7 +21,6 @@ export class ShowService {
   async createShow(user : User, createShowDto : CreateShowDto) {
     const show = this.showRepository.create({
       user,
-      userId : user.id,
       showName : createShowDto.showName,
       description : createShowDto.description,
       category : createShowDto.category,
@@ -33,7 +32,7 @@ export class ShowService {
 
     const seat = createShowDto.seatInfo.map(idx => {
       const { seatNum, grade, price } = idx;
-      const seatEntity = this.seatRepository.create({ seatNum, grade, price , showId :show.id });
+      const seatEntity = this.seatRepository.create({ seatNum, grade, price , show });
       seatEntity.show = show;
       return seatEntity;
     });
@@ -59,7 +58,7 @@ export class ShowService {
   }
   
   async searchTicket(showId : number) {
-    const tickets = this.seatRepository
+    const seat = this.seatRepository
                       .createQueryBuilder('seats')
                       .select([
                         'seats.id as seatId',
@@ -72,10 +71,10 @@ export class ShowService {
                       .where('seats.showId = :showId', { showId })
                       .groupBy('seats.id, seats.grade, seats.seat_num, seats.price, shows.show_date')
                       .getRawMany();
-    if (_.isEmpty(tickets)) {
+    if (_.isEmpty(seat)) {
       throw new NotFoundException('예매 가능한 좌석 정보가 없습니다.');
     }
-    return tickets;
+    return seat;
   }
 
   async createTicket(user: User, seatId: number, showId: number) {
@@ -98,7 +97,7 @@ export class ShowService {
         if (existingTicket && existingTicket.cancelYn === false) {
             throw new NotFoundException('이미 예매된 좌석입니다.');
         }
-        if (existingTicket && existingTicket.userId === user.id) {
+        if (existingTicket && existingTicket.user.id === user.id) {
             throw new ForbiddenException('이미 예매되었습니다.');
         }
 
@@ -117,9 +116,7 @@ export class ShowService {
 
         const newTicket = this.ticketRepository.create({
             user,
-            userId: user.id,
             seats: existingTicket.seats,
-            seatId,
             cancelYn: false,
         });
 
@@ -144,7 +141,7 @@ export class ShowService {
     if (!ticket) {
       throw new NotFoundException('티켓이 존재하지 않습니다.');
     }
-    if (ticket.userId !== user.id) {
+    if (ticket.user.id !== user.id) {
       throw new ForbiddenException('해당 티켓을 취소할 권한이 없습니다.');
     }
     if (ticket.cancelYn) {

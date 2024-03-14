@@ -12,15 +12,9 @@ export class Ticket {
   @JoinColumn({ name: 'seatId' })
   seats: Seat;
 
-  @Column({ type: 'int', nullable: false })
-  seatId: number;
-
   @ManyToOne(() => User, (user) => user.ticket)
   @JoinColumn({ name: 'userId' })
   user: User;
-
-  @Column({ type: 'int', nullable: false })
-  userId: number;
 
   @Column({ type: 'boolean', default: false, nullable: false })
   cancelYn: boolean;
