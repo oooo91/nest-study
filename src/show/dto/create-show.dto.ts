@@ -7,11 +7,11 @@ export class CreateShowDto {
 
   @IsString()
   @IsNotEmpty({message : "공연명을 입력하세요"})
-  showName : string;
+  show_name : string;
 
   @IsDateString()
   @IsNotEmpty({message : "공연날짜를 선택하세요"})
-  showDate : Date;
+  show_date : Date;
 
   @IsString()
   @IsNotEmpty({message : "공연정보를 입력하세요"})

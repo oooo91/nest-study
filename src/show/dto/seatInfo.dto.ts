@@ -2,7 +2,7 @@ import { IsNotEmpty } from 'class-validator';
 
 export class SeatInfoDto {
   @IsNotEmpty({ message: '좌석 번호를 입력해주세요.' })
-  seatNum: number;
+  seat_num: number;
 
   @IsNotEmpty({ message: '등급을 입력해주세요.' })
   grade: string;

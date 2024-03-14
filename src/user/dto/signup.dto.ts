@@ -19,7 +19,6 @@ export class SignUpDto {
   @IsNotEmpty({message : '이름을 작성해주세요'})
   name : string;
 
-  @IsEnum(Role)
   @IsNotEmpty({message : '권한을 입력하세요'})
   role : Role;
   

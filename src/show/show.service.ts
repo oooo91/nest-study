@@ -21,18 +21,18 @@ export class ShowService {
   async createShow(user : User, createShowDto : CreateShowDto) {
     const show = this.showRepository.create({
       user,
-      showName : createShowDto.showName,
+      show_name : createShowDto.show_name,
       description : createShowDto.description,
       category : createShowDto.category,
-      showDate : createShowDto.showDate,
+      show_date : createShowDto.show_date,
       location : createShowDto.location
     });
 
     await this.showRepository.save(show);  
 
     const seat = createShowDto.seatInfo.map(idx => {
-      const { seatNum, grade, price } = idx;
-      const seatEntity = this.seatRepository.create({ seatNum, grade, price , show });
+      const { seat_num, grade, price } = idx;
+      const seatEntity = this.seatRepository.create({ seat_num, grade, price , show });
       seatEntity.show = show;
       return seatEntity;
     });
@@ -49,32 +49,22 @@ export class ShowService {
   }
 
   async detailShow(showId : number) {
-    const show = await this.showRepository.findOneBy({ id : showId });
+    const show = await this.showRepository.findOneBy({ show_id : showId });
     
     if (_.isNil(show)) {
       throw new NotFoundException('조회할 수 없습니다.');
     }
     return show;
   }
-  
+
+  //select * from shows, seats where show_id = seats.showId and seats.check_yn = 0 and shows.show_id = {showId}
   async searchTicket(showId : number) {
-    const seat = this.seatRepository
-                      .createQueryBuilder('seats')
-                      .select([
-                        'seats.id as seatId',
-                        'seats.grade as grade',
-                        'seats.seat_num as seatNum',
-                        'seats.price as price',
-                        'CONVERT_TZ(shows.show_date, "+00:00", "+09:00") AS show_date'
-                      ])
-                      .leftJoin('shows', 'shows', 'shows.id = seats.show_id')
-                      .where('seats.showId = :showId', { showId })
-                      .groupBy('seats.id, seats.grade, seats.seat_num, seats.price, shows.show_date')
-                      .getRawMany();
-    if (_.isEmpty(seat)) {
-      throw new NotFoundException('예매 가능한 좌석 정보가 없습니다.');
-    }
-    return seat;
+    const result = await this.seatRepository.createQueryBuilder("seat")
+                                    .innerJoin("seat.show", "show")
+                                    .where("seat.check_yn = :checkYn", { checkYn: '0' })
+                                    .andWhere('show.show_id = :showId', { showId })
+                                    .getRawMany();
+    return result;
   }
 
   async createTicket(user: User, seatId: number, showId: number) {
@@ -83,25 +73,34 @@ export class ShowService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
+    /**
+     * 
+    select * from tickets, seats, shows, users 
+    where tickets.seatId = seats.seat_id 
+    and tickets.userId  = users.id 
+    and seats.showId = shows.show_id 
+    and tickets.seatId = 1 and seats.showId = 5 order by tickets.created_at desc;
+     */
     try {
         const existingTicket = await this.ticketRepository
             .createQueryBuilder('ticket')
-            .leftJoinAndSelect('ticket.seats', 'seat')
+            .leftJoin('ticket.seat', 'seat')
+            .leftJoin('ticket.user', 'user')
             .leftJoin('seat.show', 'show')
-            .where('ticket.seatId = :seatId', { seatId })
-            .andWhere('show.id = :showId', { showId })
+            .where('seat.seat_id = :seatId', { seatId })
+            .andWhere('show.show_id = :showId', { showId })
             .orderBy('ticket.created_at', 'DESC')
             .getOne();
 
 
-        if (existingTicket && existingTicket.cancelYn === false) {
+        if (existingTicket && existingTicket.cancel_yn === false) {
             throw new NotFoundException('이미 예매된 좌석입니다.');
         }
         if (existingTicket && existingTicket.user.id === user.id) {
             throw new ForbiddenException('이미 예매되었습니다.');
         }
 
-        const showDate = existingTicket ? existingTicket.seats.show.showDate : null;
+        const showDate = existingTicket ? existingTicket.seats.show.show_date : null;
 
         const currentTime = new Date();
         const isBeforeThreeHours = showDate && currentTime.getTime() < showDate.getTime() - 3 * 60 * 60 * 1000;
@@ -117,14 +116,16 @@ export class ShowService {
         const newTicket = this.ticketRepository.create({
             user,
             seats: existingTicket.seats,
-            cancelYn: false,
+            cancel_yn: false,
         });
 
         user.point -= existingTicket.seats.price;
+        
         await this.userRepository.save(user);
+        await this.ticketRepository.save(newTicket);
         await queryRunner.commitTransaction();
 
-        return this.ticketRepository.save(newTicket);
+        return newTicket;
 
     } catch (err) {
         await queryRunner.rollbackTransaction();
@@ -136,7 +137,7 @@ export class ShowService {
 }
 
   async updateTicket(user : User, ticketId : number) {
-    const ticket = await this.ticketRepository.findOneBy({ id : ticketId});
+    const ticket = await this.ticketRepository.findOneBy({ticket_id : ticketId});
 
     if (!ticket) {
       throw new NotFoundException('티켓이 존재하지 않습니다.');
@@ -144,11 +145,11 @@ export class ShowService {
     if (ticket.user.id !== user.id) {
       throw new ForbiddenException('해당 티켓을 취소할 권한이 없습니다.');
     }
-    if (ticket.cancelYn) {
+    if (ticket.cancel_yn) {
       throw new BadRequestException('이미 취소된 티켓입니다.');
     }
 
-    ticket.cancelYn = true;
+    ticket.cancel_yn = true;
     await this.ticketRepository.save(ticket);
   }
 }

@@ -6,7 +6,7 @@ import { Seat } from './seat.entity';
 export class Show {
 
   @PrimaryGeneratedColumn()
-  id : number;
+  show_id : number;
 
   @ManyToOne(() => User, (user) => user.show)
   @JoinColumn({name : 'userId'})
@@ -16,10 +16,10 @@ export class Show {
   seat: Seat[];
   
   @Column({type : 'varchar', nullable : false})
-  showName : string;
+  show_name : string;
 
   @Column({ type: 'datetime', nullable: false }) 
-  showDate: Date; 
+  show_date: Date; 
 
   @Column({ type: 'text', nullable: false })
   description: string;

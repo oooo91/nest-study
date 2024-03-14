@@ -6,7 +6,7 @@ import { Ticket } from './ticket.entity';
 export class Seat {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  seat_id: number;
 
   @ManyToOne(() => Show, (show) => show.seat)
   @JoinColumn({ name: 'showId' })
@@ -19,7 +19,10 @@ export class Seat {
   grade: string;
 
   @Column({ type: 'int', nullable: false })
-  seatNum: number;
+  seat_num: number;
+
+  @Column({type : 'boolean', nullable : false, default : false })
+  check_yn : boolean;
 
   @Column({ type: 'int', nullable: false })
   price: number;

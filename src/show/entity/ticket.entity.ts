@@ -6,7 +6,7 @@ import { User } from 'src/user/entity/user.entity';
 export class Ticket {
   
   @PrimaryGeneratedColumn()
-  id: number;
+  ticket_id: number;
 
   @ManyToOne(() => Seat, (seat) => seat.ticket)
   @JoinColumn({ name: 'seatId' })
@@ -17,7 +17,7 @@ export class Ticket {
   user: User;
 
   @Column({ type: 'boolean', default: false, nullable: false })
-  cancelYn: boolean;
+  cancel_yn: boolean;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
